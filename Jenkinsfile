@@ -61,7 +61,7 @@ pipeline {
         stage('Transfer Docker Image') {
             steps {
                 script {
-                    sh "scp -i $SSH_KEY_PATH $IMAGE_TAR $APPLICATION_SERVER:$DEST_PATH"
+                    sh "sudo scp -i $SSH_KEY_PATH $IMAGE_TAR $APPLICATION_SERVER:$DEST_PATH"
                 }
             }
         }
