@@ -59,7 +59,7 @@ pipeline {
 
         stage('Transfer Docker Image') {
             steps {
-                sshagent(credentials: ['your-ssh-key-credentials-id']) {
+                sshagent(credentials: ['jenkinsssh']) {
                     script {
                         sh "scp $IMAGE_TAR $APPLICATION_SERVER:$DEST_PATH"
                     }
@@ -69,7 +69,7 @@ pipeline {
 
        stage('Deploy on Application Server') {
             steps {
-                sshagent(credentials: ['your-ssh-key-credentials-id']) {
+                sshagent(credentials: ['jenkinsssh']) {
                     script {
                         sh """
                         ssh $APPLICATION_SERVER '
