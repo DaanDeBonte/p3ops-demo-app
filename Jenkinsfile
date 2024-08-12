@@ -6,7 +6,7 @@ pipeline {
         IMAGE_TAR = 'myapp.tar'
         APPLICATION_SERVER = 'vagrant@192.168.56.31'
         DEST_PATH = '~/'
-        SSH_KEY_PATH = '/home/vagrant/.ssh/id_rsa.pub'  // Path to your SSH key on Jenkins server
+        SSH_KEY_PATH = '/home/vagrant/.ssh/id_rsa'  // Path to your SSH key on Jenkins server
     }
 
     stages {
@@ -61,7 +61,7 @@ pipeline {
         stage('Transfer Docker Image') {
             steps {
                 script {
-                    sh "sudo scp -i $SSH_KEY_PATH $IMAGE_TAR $APPLICATION_SERVER:$DEST_PATH"
+                    sh "scp -i $SSH_KEY_PATH $IMAGE_TAR $APPLICATION_SERVER:$DEST_PATH"
                 }
             }
         }
