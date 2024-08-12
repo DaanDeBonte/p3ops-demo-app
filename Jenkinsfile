@@ -6,7 +6,6 @@ pipeline {
         IMAGE_TAR = 'myapp.tar'
         APPLICATION_SERVER = 'vagrant@192.168.56.31'
         DEST_PATH = '~/'
-        SSH_KEY_PATH = '/home/vagrant/.ssh/id_rsa'  // Path to your SSH key on Jenkins server
     }
 
     stages {
@@ -60,29 +59,27 @@ pipeline {
 
         stage('Transfer Docker Image') {
             steps {
-                script {
-                    sh "scp -i $SSH_KEY_PATH $IMAGE_TAR $APPLICATION_SERVER:$DEST_PATH"
+                sshagent(credentials: ['your-ssh-key-credentials-id']) {
+                    script {
+                        sh "scp $IMAGE_TAR $APPLICATION_SERVER:$DEST_PATH"
+                    }
                 }
             }
         }
 
-        stage('Deploy on Application Server') {
+       stage('Deploy on Application Server') {
             steps {
-                script {
-                    sh """
-                    ssh -i $SSH_KEY_PATH $APPLICATION_SERVER '
-                        docker load -i $DEST_PATH/$IMAGE_TAR &&
-                        docker run -d --name myapp-container -p 80:80 $DOCKER_IMAGE
-                    '
-                    """
+                sshagent(credentials: ['your-ssh-key-credentials-id']) {
+                    script {
+                        sh """
+                        ssh $APPLICATION_SERVER '
+                            docker load -i $DEST_PATH/$IMAGE_TAR &&
+                            docker run -d --name myapp-container -p 80:80 $DOCKER_IMAGE
+                        '
+                        """
+                    }
                 }
             }
-        }
-    }
-    
-    post {
-        always {
-            cleanWs()  // Clean workspace after the build is finished
         }
     }
 }
