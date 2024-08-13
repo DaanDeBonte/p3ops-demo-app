@@ -12,7 +12,7 @@ pipeline {
                     waitForSqlService('db')
 
                     // Build your application
-                    sh 'docker-compose exec server docker build -t your-app .'
+                    sh 'docker-compose exec server build -t your-app .'
                 }
             }
         }
