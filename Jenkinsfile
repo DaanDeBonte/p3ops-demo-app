@@ -37,7 +37,7 @@ pipeline {
             steps {
                 script {
                     // Use the existing Docker Compose environment to build the image
-                    sh 'docker-compose exec app docker build -t $DOCKER_IMAGE .'
+                    sh 'docker-compose exec server docker build -t $DOCKER_IMAGE .'
                 }
             }
         }
