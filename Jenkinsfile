@@ -44,30 +44,27 @@ pipeline {
 
         stage('Transfer Docker Image') {
             steps {
-                sshagent(credentials: ['jenkinsssh']) {
-                    script {
-                        sh "scp $IMAGE_TAR $APPLICATION_SERVER:$DEST_PATH"
-                    }
+                script {
+                    sh "scp -i /path/to/private/key $IMAGE_TAR $APPLICATION_SERVER:$DEST_PATH"
                 }
             }
         }
 
         stage('Deploy on Application Server') {
             steps {
-                sshagent(credentials: ['jenkinsssh']) {
-                    script {
-                        sh """
-                        ssh $APPLICATION_SERVER '
-                            docker load -i $DEST_PATH/$IMAGE_TAR &&
-                            docker stop myapp-container || true &&
-                            docker rm myapp-container || true &&
-                            docker run -d --name myapp-container -p 80:80 $DOCKER_IMAGE
-                        '
-                        """
-                    }
+                script {
+                    sh """
+                    ssh -i /path/to/private/key $APPLICATION_SERVER '
+                        docker load -i $DEST_PATH/$IMAGE_TAR &&
+                        docker stop myapp-container || true &&
+                        docker rm myapp-container || true &&
+                        docker run -d --name myapp-container -p 80:80 $DOCKER_IMAGE
+                    '
+                    """
                 }
             }
         }
+        
     }
 
     post {
