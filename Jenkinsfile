@@ -23,7 +23,7 @@ pipeline {
                     sh 'docker-compose up -d'
 
                     // Wait for services to be up and running
-                    waitForSqlService('mssql')
+                    waitForSqlService('db')
 
                     // Build your application
                     sh 'dotnet restore src/Server/Server.csproj'
