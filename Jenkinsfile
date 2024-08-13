@@ -55,10 +55,10 @@ pipeline {
                 script {
                     sh """
                     ssh -i /var/lib/jenkins/.ssh/id_rsa $APPLICATION_SERVER '
-                        docker load -i $DEST_PATH/$IMAGE_TAR &&
-                        docker stop myapp-container || true &&
-                        docker rm myapp-container || true &&
-                        docker run -d --name myapp-container -p 80:80 $DOCKER_IMAGE
+                        sudo docker load -i $DEST_PATH/$IMAGE_TAR &&
+                        sudo docker stop myapp-container || true &&
+                        sudo docker rm myapp-container || true &&
+                        sudo docker run -d --name myapp-container -p 80:80 $DOCKER_IMAGE
                     '
                     """
                 }
