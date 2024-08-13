@@ -45,7 +45,7 @@ pipeline {
         stage('Transfer Docker Image') {
             steps {
                 script {
-                    sh "scp -i /path/to/private/key $IMAGE_TAR $APPLICATION_SERVER:$DEST_PATH"
+                    sh "scp -i /var/lib/jenkins/.ssh/id_rsa $IMAGE_TAR $APPLICATION_SERVER:$DEST_PATH"
                 }
             }
         }
@@ -54,7 +54,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                    ssh -i /path/to/private/key $APPLICATION_SERVER '
+                    ssh -i /var/lib/jenkins/.ssh/id_rsa $APPLICATION_SERVER '
                         docker load -i $DEST_PATH/$IMAGE_TAR &&
                         docker stop myapp-container || true &&
                         docker rm myapp-container || true &&
