@@ -19,11 +19,11 @@ pipeline {
         stage('Build and Start Containers') {
             steps {
                 script {
-                    // Start the Docker Compose services
+                    // Build and start Docker Compose services
                     sh 'docker-compose up -d'
 
-                    // Wait for services to be up and running
-                    waitForSqlService('db')
+                    // Wait for SQL Server service to be up and running
+                    waitForSqlService('sql-server')
 
                     // Build your application
                     sh 'dotnet restore src/Server/Server.csproj'
@@ -41,7 +41,6 @@ pipeline {
                 }
             }
         }
-
 
         stage('Save Docker Image') {
             steps {
@@ -67,7 +66,7 @@ pipeline {
                         sudo docker load -i $DEST_PATH/$IMAGE_TAR &&
                         sudo docker stop myapp-container || true &&
                         sudo docker rm myapp-container || true &&
-                        sudo docker run -d --name myapp-container -p 80:80 $DOCKER_IMAGE
+                        sudo docker run -d --name myapp-container --network myapp-network -p 80:80 $DOCKER_IMAGE
                     '
                     """
                 }
