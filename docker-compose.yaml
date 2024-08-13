@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   server:
     container_name: dotnet_applicatie
@@ -8,12 +10,21 @@ services:
       - 8081:80
     environment:
       DOTNET_ConnectionStrings__SqlDatabase: "Server=db;Database=myDataBase;User ID=sa;Password=example_123;"
+    networks:
+      - myapp-network
+
   db:
     container_name: dotnet_db
     image: mcr.microsoft.com/mssql/server:2019-latest
     restart: always
     environment:
       ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "example_123" 
+      MSSQL_SA_PASSWORD: "example_123"
     ports:
-     - "1433:1433"
+      - "1433:1433"
+    networks:
+      - myapp-network
+
+networks:
+  myapp-network:
+    driver: bridge
