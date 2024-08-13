@@ -16,9 +16,16 @@ pipeline {
             }
         }
 
-        stage('Build .NET Application') {
+        stage('Build and Start Containers') {
             steps {
                 script {
+                    // Start the Docker Compose services
+                    sh 'docker-compose up -d'
+
+                    // Wait for services to be up and running
+                    waitForSqlService('mssql')
+
+                    // Build your application
                     sh 'dotnet restore src/Server/Server.csproj'
                     sh 'dotnet build src/Server/Server.csproj --os linux'
                     sh 'dotnet publish src/Server/Server.csproj -c Release -o publish'
@@ -29,7 +36,8 @@ pipeline {
         stage('Create Docker Image') {
             steps {
                 script {
-                    sh 'docker build -t $DOCKER_IMAGE .'
+                    // Use the existing Docker Compose environment to build the image
+                    sh 'docker-compose exec app docker build -t $DOCKER_IMAGE .'
                 }
             }
         }
@@ -64,12 +72,22 @@ pipeline {
                 }
             }
         }
-        
     }
 
     post {
         always {
+            // Clean up - stop and remove containers
+            sh 'docker-compose down'
             cleanWs()
         }
     }
 }
+
+def waitForSqlService(serviceName) {
+    timeout(time: 5, unit: 'MINUTES') {
+        waitUntil {
+            return sh(script: "docker-compose ps -q $serviceName | xargs docker inspect --format '{{.State.Status}}'", returnStatus: true) == 0
+        }
+    }
+}
+
