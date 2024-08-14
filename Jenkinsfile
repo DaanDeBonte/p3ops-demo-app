@@ -62,6 +62,9 @@ pipeline {
                             -p 1433:1433 \
                             mcr.microsoft.com/mssql/server:2019-latest
 
+                        # Wait for 60 seconds to ensure SQL Server is up and running
+                        sleep 60
+
                         # Run the application container
                         sudo docker run -d \
                             --name $APP_CONTAINER_NAME \
