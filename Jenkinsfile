@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'myapp:latest'
         IMAGE_TAR = 'myapp.tar'
-        APPLICATION_SERVER = 'vagrant@192.168.56.31'
+        APPLICATION_SERVER = 'vagrant@192.168.56.41'
         DEST_PATH = '~/'
         DB_CONTAINER_NAME = 'dotnet_db'
         APP_CONTAINER_NAME = 'dotnet_applicatie'
