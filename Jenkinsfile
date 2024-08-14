@@ -43,6 +43,10 @@ pipeline {
                 script {
                     sh """
                     ssh -i /var/lib/jenkins/.ssh/id_rsa $APPLICATION_SERVER '
+
+                        # Create Docker network if it doesn't exist
+                        sudo docker network inspect myapp-network >/dev/null 2>&1 || sudo docker network create myapp-network
+
                         # Load Docker image
                         sudo docker load -i $DEST_PATH/$IMAGE_TAR
 
